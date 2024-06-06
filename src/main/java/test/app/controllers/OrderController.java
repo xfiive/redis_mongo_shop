@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
+import test.app.entities.Client;
 import test.app.entities.Order;
 import test.app.services.OrderService;
 
@@ -28,6 +29,14 @@ public class OrderController {
     public ResponseEntity<Order> findById(@PathVariable String id) {
         Optional<Order> order = this.orderService.findById(id);
         return order.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Order>> findAll() {
+        List<Order> orders = this.orderService.findAll();
+        if (orders.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @GetMapping("/client/{id}")
