@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/order")
 @Scope(WebApplicationContext.SCOPE_SESSION)
 public class OrderController {
 
@@ -28,7 +28,7 @@ public class OrderController {
     @GetMapping("/{id}")
     public ResponseEntity<Order> findById(@PathVariable String id) {
         Optional<Order> order = this.orderService.findById(id);
-        return order.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return order.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @GetMapping("/all")
@@ -51,19 +51,19 @@ public class OrderController {
     public ResponseEntity<String> deleteById(@PathVariable String id) {
         boolean isRemoved = this.orderService.deleteById(id);
         if (!isRemoved)
-            return new ResponseEntity<>("Order not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Order not found", HttpStatus.NO_CONTENT);
         return new ResponseEntity<>("Order deleted successfully", HttpStatus.OK);
     }
 
     @PostMapping("/add")
     public ResponseEntity<Order> addNew(@RequestBody Order order) {
         Optional<Order> savedOrder = this.orderService.addNew(order);
-        return savedOrder.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return savedOrder.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Order> updateOrder(@PathVariable String id, @RequestBody Order order) {
         Optional<Order> updatedOrder = this.orderService.updateOrder(id, order);
-        return updatedOrder.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return updatedOrder.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 }

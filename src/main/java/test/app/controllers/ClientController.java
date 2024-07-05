@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/client")
+@RequestMapping("/client")
 @Scope(WebApplicationContext.SCOPE_SESSION)
 public class ClientController {
 
@@ -51,27 +51,27 @@ public class ClientController {
     @GetMapping("/{id}")
     public ResponseEntity<Client> findById(@PathVariable String id) {
         Optional<Client> client = this.clientService.findById(id);
-        return client.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return client.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @PostMapping("/add")
     public ResponseEntity<Client> addNew(@RequestBody Client client) {
         Optional<Client> savedClient = this.clientService.addNew(client);
         return savedClient.map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Client> updateClient(@PathVariable String id, @RequestBody Client client) {
         Optional<Client> updatedClient = this.clientService.updateClient(id, client);
-        return updatedClient.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return updatedClient.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteById(@PathVariable String id) {
         boolean isRemoved = this.clientService.deleteById(id);
         if (!isRemoved) {
-            return new ResponseEntity<>("Client not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Client not found", HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>("Client deleted successfully", HttpStatus.OK);
     }

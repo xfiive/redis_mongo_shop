@@ -2,7 +2,11 @@ package test.app.services;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import test.app.entities.Order;
 import test.app.repos.OrderRepository;
 
@@ -19,18 +23,26 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
+    @Transactional
+    @Cacheable(value = "OrderService::findAll", key = "'OrderService::findAll'")
     public List<Order> findAll() {
         return this.orderRepository.findAll();
     }
 
+    @Transactional
+    @Cacheable(value = "OrderService::findById", key = "'OrderService::findById' + #id")
     public Optional<Order> findById(String id) {
         return this.orderRepository.findById(id);
     }
 
+    @Transactional
+    @Cacheable(value = "OrderService::findByClientId", key = "'OrderService::findByClientId' + #id")
     public List<Order> findAllByClientId(String id) {
         return this.orderRepository.findAllByClientId(id);
     }
 
+    @Transactional
+    @Cacheable(value = "OrderService::addNew", key = "'OrderService::addNew' + #order.id")
     public Optional<Order> addNew(@NotNull Order order) {
         if (this.orderRepository.findById(order.getId()).isEmpty()) {
             return Optional.of(this.orderRepository.save(order));
@@ -39,6 +51,8 @@ public class OrderService {
         }
     }
 
+    @Transactional
+    @CachePut(value = "OrderService::updateOrder", key = "'OrderService::updateOrder' + #id")
     public Optional<Order> updateOrder(String id, Order updatedOrder) {
         Optional<Order> existingOrderOpt = this.orderRepository.findById(id);
 
@@ -57,6 +71,8 @@ public class OrderService {
         return Optional.of(savedOrder);
     }
 
+    @Transactional
+    @CacheEvict(value = "OrderService::deleteById", key = "'OrderService::deleteById' + #id")
     public boolean deleteById(String id) {
         Optional<Order> order = this.orderRepository.findById(id);
 

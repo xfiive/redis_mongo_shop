@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/product")
 @Scope(WebApplicationContext.SCOPE_SESSION)
 public class ProductController {
 
@@ -37,7 +37,7 @@ public class ProductController {
     public ResponseEntity<Product> findById(@PathVariable String id) {
         Optional<Product> product = productService.findById(id);
         return product.map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @GetMapping("/name")
@@ -53,21 +53,21 @@ public class ProductController {
     public ResponseEntity<Product> addNew(@RequestBody Product product) {
         Optional<Product> savedProduct = this.productService.addNew(product);
         return savedProduct.map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable String id, @RequestBody Product product) {
         Optional<Product> updatedProduct = productService.updateProduct(id, product);
         return updatedProduct.map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteById(@PathVariable String id) {
         boolean isRemoved = this.productService.deleteById(id);
         if (!isRemoved) {
-            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Product not found", HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>("Product deleted successfully", HttpStatus.OK);
     }
